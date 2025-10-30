@@ -33,16 +33,16 @@ model User {
 }
 
 model Account {
-  id String @id @default(cuid()) @map("_id")
-  userId String @map("user_id")
+  id String @id @default(cuid()) @map("_id") @db.ObjectId
+  userId String @map("user_id") @db.ObjectId
   type String
   provider String
   providerAccountId String
   refreshToken String? @map("refresh_token")
   accessToken String? @map("access_token")
-  expireAt Int? @map("expire_at")
+  expires_at Int? @map("expires_at")
   tokenType String? @map("token_type")
-  scope String
+  scope String?
   idToken String? @map("id_token")
   sessionState String? @map("session_state")
 
