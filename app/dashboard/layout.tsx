@@ -25,6 +25,8 @@ export default async function dashboardLayout({
     icon: technologyIconMap[item.template] || "Code2",
   }));
 
+
+  
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full overflow-x-hidden">

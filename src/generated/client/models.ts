@@ -9,4 +9,6 @@
  */
 export type * from './models/User'
 export type * from './models/Account'
+export type * from './models/Playground'
+export type * from './models/StarMark'
 export type * from './commonInputTypes'
