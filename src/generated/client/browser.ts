@@ -36,3 +36,8 @@ export type Playground = Prisma.PlaygroundModel
  * 
  */
 export type StarMark = Prisma.StarMarkModel
+/**
+ * Model TemplateFile
+ * 
+ */
+export type TemplateFile = Prisma.TemplateFileModel

@@ -392,7 +392,8 @@ export const ModelName = {
   User: 'User',
   Account: 'Account',
   Playground: 'Playground',
-  StarMark: 'StarMark'
+  StarMark: 'StarMark',
+  TemplateFile: 'TemplateFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "playground" | "starMark"
+    modelProps: "user" | "account" | "playground" | "starMark" | "templateFile"
     txIsolationLevel: never
   }
   model: {
@@ -708,6 +709,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TemplateFile: {
+      payload: Prisma.$TemplateFilePayload<ExtArgs>
+      fields: Prisma.TemplateFileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TemplateFileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TemplateFileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        findFirst: {
+          args: Prisma.TemplateFileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TemplateFileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        findMany: {
+          args: Prisma.TemplateFileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>[]
+        }
+        create: {
+          args: Prisma.TemplateFileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        createMany: {
+          args: Prisma.TemplateFileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TemplateFileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        update: {
+          args: Prisma.TemplateFileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        deleteMany: {
+          args: Prisma.TemplateFileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TemplateFileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TemplateFileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TemplateFilePayload>
+        }
+        aggregate: {
+          args: Prisma.TemplateFileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTemplateFile>
+        }
+        groupBy: {
+          args: Prisma.TemplateFileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TemplateFileGroupByOutputType>[]
+        }
+        findRaw: {
+          args: Prisma.TemplateFileFindRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        aggregateRaw: {
+          args: Prisma.TemplateFileAggregateRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        count: {
+          args: Prisma.TemplateFileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TemplateFileCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -778,6 +853,17 @@ export const StarMarkScalarFieldEnum = {
 } as const
 
 export type StarMarkScalarFieldEnum = (typeof StarMarkScalarFieldEnum)[keyof typeof StarMarkScalarFieldEnum]
+
+
+export const TemplateFileScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  playgroundId: 'playgroundId'
+} as const
+
+export type TemplateFileScalarFieldEnum = (typeof TemplateFileScalarFieldEnum)[keyof typeof TemplateFileScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -869,6 +955,13 @@ export type EnumTemplatesFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'Templates[]'
  */
 export type ListEnumTemplatesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Templates[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
@@ -975,6 +1068,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   playground?: Prisma.PlaygroundOmit
   starMark?: Prisma.StarMarkOmit
+  templateFile?: Prisma.TemplateFileOmit
 }
 
 /* Types for Logging */
