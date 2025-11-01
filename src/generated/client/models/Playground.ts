@@ -199,6 +199,7 @@ export type PlaygroundWhereInput = {
   userId?: Prisma.StringFilter<"Playground"> | string
   Starmark?: Prisma.StarMarkListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  templateFiles?: Prisma.TemplateFileListRelationFilter
 }
 
 export type PlaygroundOrderByWithRelationInput = {
@@ -211,6 +212,7 @@ export type PlaygroundOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   Starmark?: Prisma.StarMarkOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
+  templateFiles?: Prisma.TemplateFileOrderByRelationAggregateInput
 }
 
 export type PlaygroundWhereUniqueInput = Prisma.AtLeast<{
@@ -226,6 +228,7 @@ export type PlaygroundWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Playground"> | string
   Starmark?: Prisma.StarMarkListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  templateFiles?: Prisma.TemplateFileListRelationFilter
 }, "id">
 
 export type PlaygroundOrderByWithAggregationInput = {
@@ -263,6 +266,7 @@ export type PlaygroundCreateInput = {
   updatedAt?: Date | string
   Starmark?: Prisma.StarMarkCreateNestedManyWithoutPlaygroundInput
   user: Prisma.UserCreateNestedOneWithoutMyPlaygroundInput
+  templateFiles?: Prisma.TemplateFileCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundUncheckedCreateInput = {
@@ -274,6 +278,7 @@ export type PlaygroundUncheckedCreateInput = {
   updatedAt?: Date | string
   userId: string
   Starmark?: Prisma.StarMarkUncheckedCreateNestedManyWithoutPlaygroundInput
+  templateFiles?: Prisma.TemplateFileUncheckedCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundUpdateInput = {
@@ -284,6 +289,7 @@ export type PlaygroundUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Starmark?: Prisma.StarMarkUpdateManyWithoutPlaygroundNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutMyPlaygroundNestedInput
+  templateFiles?: Prisma.TemplateFileUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundUncheckedUpdateInput = {
@@ -294,6 +300,7 @@ export type PlaygroundUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   Starmark?: Prisma.StarMarkUncheckedUpdateManyWithoutPlaygroundNestedInput
+  templateFiles?: Prisma.TemplateFileUncheckedUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundCreateManyInput = {
@@ -428,6 +435,20 @@ export type PlaygroundUpdateOneRequiredWithoutStarmarkNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PlaygroundUpdateToOneWithWhereWithoutStarmarkInput, Prisma.PlaygroundUpdateWithoutStarmarkInput>, Prisma.PlaygroundUncheckedUpdateWithoutStarmarkInput>
 }
 
+export type PlaygroundCreateNestedOneWithoutTemplateFilesInput = {
+  create?: Prisma.XOR<Prisma.PlaygroundCreateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedCreateWithoutTemplateFilesInput>
+  connectOrCreate?: Prisma.PlaygroundCreateOrConnectWithoutTemplateFilesInput
+  connect?: Prisma.PlaygroundWhereUniqueInput
+}
+
+export type PlaygroundUpdateOneRequiredWithoutTemplateFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.PlaygroundCreateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedCreateWithoutTemplateFilesInput>
+  connectOrCreate?: Prisma.PlaygroundCreateOrConnectWithoutTemplateFilesInput
+  upsert?: Prisma.PlaygroundUpsertWithoutTemplateFilesInput
+  connect?: Prisma.PlaygroundWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlaygroundUpdateToOneWithWhereWithoutTemplateFilesInput, Prisma.PlaygroundUpdateWithoutTemplateFilesInput>, Prisma.PlaygroundUncheckedUpdateWithoutTemplateFilesInput>
+}
+
 export type PlaygroundCreateWithoutUserInput = {
   id?: string
   title: string
@@ -436,6 +457,7 @@ export type PlaygroundCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   Starmark?: Prisma.StarMarkCreateNestedManyWithoutPlaygroundInput
+  templateFiles?: Prisma.TemplateFileCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundUncheckedCreateWithoutUserInput = {
@@ -446,6 +468,7 @@ export type PlaygroundUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   Starmark?: Prisma.StarMarkUncheckedCreateNestedManyWithoutPlaygroundInput
+  templateFiles?: Prisma.TemplateFileUncheckedCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundCreateOrConnectWithoutUserInput = {
@@ -494,6 +517,7 @@ export type PlaygroundCreateWithoutStarmarkInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMyPlaygroundInput
+  templateFiles?: Prisma.TemplateFileCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundUncheckedCreateWithoutStarmarkInput = {
@@ -504,6 +528,7 @@ export type PlaygroundUncheckedCreateWithoutStarmarkInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  templateFiles?: Prisma.TemplateFileUncheckedCreateNestedManyWithoutPlaygroundInput
 }
 
 export type PlaygroundCreateOrConnectWithoutStarmarkInput = {
@@ -529,6 +554,7 @@ export type PlaygroundUpdateWithoutStarmarkInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMyPlaygroundNestedInput
+  templateFiles?: Prisma.TemplateFileUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundUncheckedUpdateWithoutStarmarkInput = {
@@ -538,6 +564,65 @@ export type PlaygroundUncheckedUpdateWithoutStarmarkInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateFiles?: Prisma.TemplateFileUncheckedUpdateManyWithoutPlaygroundNestedInput
+}
+
+export type PlaygroundCreateWithoutTemplateFilesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  templates?: $Enums.Templates
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  Starmark?: Prisma.StarMarkCreateNestedManyWithoutPlaygroundInput
+  user: Prisma.UserCreateNestedOneWithoutMyPlaygroundInput
+}
+
+export type PlaygroundUncheckedCreateWithoutTemplateFilesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  templates?: $Enums.Templates
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  Starmark?: Prisma.StarMarkUncheckedCreateNestedManyWithoutPlaygroundInput
+}
+
+export type PlaygroundCreateOrConnectWithoutTemplateFilesInput = {
+  where: Prisma.PlaygroundWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlaygroundCreateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedCreateWithoutTemplateFilesInput>
+}
+
+export type PlaygroundUpsertWithoutTemplateFilesInput = {
+  update: Prisma.XOR<Prisma.PlaygroundUpdateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedUpdateWithoutTemplateFilesInput>
+  create: Prisma.XOR<Prisma.PlaygroundCreateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedCreateWithoutTemplateFilesInput>
+  where?: Prisma.PlaygroundWhereInput
+}
+
+export type PlaygroundUpdateToOneWithWhereWithoutTemplateFilesInput = {
+  where?: Prisma.PlaygroundWhereInput
+  data: Prisma.XOR<Prisma.PlaygroundUpdateWithoutTemplateFilesInput, Prisma.PlaygroundUncheckedUpdateWithoutTemplateFilesInput>
+}
+
+export type PlaygroundUpdateWithoutTemplateFilesInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templates?: Prisma.EnumTemplatesFieldUpdateOperationsInput | $Enums.Templates
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Starmark?: Prisma.StarMarkUpdateManyWithoutPlaygroundNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutMyPlaygroundNestedInput
+}
+
+export type PlaygroundUncheckedUpdateWithoutTemplateFilesInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templates?: Prisma.EnumTemplatesFieldUpdateOperationsInput | $Enums.Templates
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  Starmark?: Prisma.StarMarkUncheckedUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundCreateManyUserInput = {
@@ -556,6 +641,7 @@ export type PlaygroundUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Starmark?: Prisma.StarMarkUpdateManyWithoutPlaygroundNestedInput
+  templateFiles?: Prisma.TemplateFileUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundUncheckedUpdateWithoutUserInput = {
@@ -565,6 +651,7 @@ export type PlaygroundUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Starmark?: Prisma.StarMarkUncheckedUpdateManyWithoutPlaygroundNestedInput
+  templateFiles?: Prisma.TemplateFileUncheckedUpdateManyWithoutPlaygroundNestedInput
 }
 
 export type PlaygroundUncheckedUpdateManyWithoutUserInput = {
@@ -582,10 +669,12 @@ export type PlaygroundUncheckedUpdateManyWithoutUserInput = {
 
 export type PlaygroundCountOutputType = {
   Starmark: number
+  templateFiles: number
 }
 
 export type PlaygroundCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Starmark?: boolean | PlaygroundCountOutputTypeCountStarmarkArgs
+  templateFiles?: boolean | PlaygroundCountOutputTypeCountTemplateFilesArgs
 }
 
 /**
@@ -605,6 +694,13 @@ export type PlaygroundCountOutputTypeCountStarmarkArgs<ExtArgs extends runtime.T
   where?: Prisma.StarMarkWhereInput
 }
 
+/**
+ * PlaygroundCountOutputType without action
+ */
+export type PlaygroundCountOutputTypeCountTemplateFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TemplateFileWhereInput
+}
+
 
 export type PlaygroundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -616,6 +712,7 @@ export type PlaygroundSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   userId?: boolean
   Starmark?: boolean | Prisma.Playground$StarmarkArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  templateFiles?: boolean | Prisma.Playground$templateFilesArgs<ExtArgs>
   _count?: boolean | Prisma.PlaygroundCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["playground"]>
 
@@ -635,6 +732,7 @@ export type PlaygroundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type PlaygroundInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Starmark?: boolean | Prisma.Playground$StarmarkArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  templateFiles?: boolean | Prisma.Playground$templateFilesArgs<ExtArgs>
   _count?: boolean | Prisma.PlaygroundCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -643,6 +741,7 @@ export type $PlaygroundPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     Starmark: Prisma.$StarMarkPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
+    templateFiles: Prisma.$TemplateFilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1017,6 +1116,7 @@ export interface Prisma__PlaygroundClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   Starmark<T extends Prisma.Playground$StarmarkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Playground$StarmarkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarMarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  templateFiles<T extends Prisma.Playground$templateFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Playground$templateFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplateFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1444,6 +1544,30 @@ export type Playground$StarmarkArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.StarMarkScalarFieldEnum | Prisma.StarMarkScalarFieldEnum[]
+}
+
+/**
+ * Playground.templateFiles
+ */
+export type Playground$templateFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TemplateFile
+   */
+  select?: Prisma.TemplateFileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TemplateFile
+   */
+  omit?: Prisma.TemplateFileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateFileInclude<ExtArgs> | null
+  where?: Prisma.TemplateFileWhereInput
+  orderBy?: Prisma.TemplateFileOrderByWithRelationInput | Prisma.TemplateFileOrderByWithRelationInput[]
+  cursor?: Prisma.TemplateFileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TemplateFileScalarFieldEnum | Prisma.TemplateFileScalarFieldEnum[]
 }
 
 /**

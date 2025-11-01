@@ -51,7 +51,8 @@ export const ModelName = {
   User: 'User',
   Account: 'Account',
   Playground: 'Playground',
-  StarMark: 'StarMark'
+  StarMark: 'StarMark',
+  TemplateFile: 'TemplateFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -113,6 +114,17 @@ export const StarMarkScalarFieldEnum = {
 } as const
 
 export type StarMarkScalarFieldEnum = (typeof StarMarkScalarFieldEnum)[keyof typeof StarMarkScalarFieldEnum]
+
+
+export const TemplateFileScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  playgroundId: 'playgroundId'
+} as const
+
+export type TemplateFileScalarFieldEnum = (typeof TemplateFileScalarFieldEnum)[keyof typeof TemplateFileScalarFieldEnum]
 
 
 export const SortOrder = {
