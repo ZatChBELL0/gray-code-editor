@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-Gray Code Editor is an AI-powered web IDE built with Next.js 15 that runs entirely in the browser. It combines Monaco Editor, WebContainers for in-browser code execution, and local AI models via Ollama for intelligent code completion and chat assistance.
+GrayCode Editor is an AI-powered web IDE built with Next.js 15 that runs entirely in the browser. It combines Monaco Editor, WebContainers for in-browser code execution, and local AI models via Ollama for intelligent code completion and chat assistance.
 
 ## Commands
 
@@ -147,7 +147,7 @@ NEXTAUTH_URL=http://localhost:3000
 
 4. **Monaco Editor**: Custom configuration in `modules/playground/lib/editor-config.ts`
 
-5. **Template Starters**: Located in `vibecode-starters/` directory, served via static file loading
+5. **Template Starters**: Located in `graycode-starters/` directory, served via static file loading
 
 ### File System Abstraction
 
@@ -159,7 +159,7 @@ The playground uses a custom file tree structure (`TemplateFolder` type) that ge
 ## Common Development Patterns
 
 ### Adding New Template
-1. Add template folder to `vibecode-starters/`
+1. Add template folder to `graycode-starters/`
 2. Add enum value to `Templates` in `prisma/schema.prisma`
 3. Add path mapping in `lib/template.ts`
 4. Run `npm run prisma:generate`
