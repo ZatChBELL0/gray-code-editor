@@ -265,7 +265,7 @@ const MainPlaygroundPage = () => {
     ]
   );
 
-    const handleSaveAll = async () => {
+    const handleSaveAll = useCallback(async () => {
     const unsavedFiles = openFiles.filter((f) => f.hasUnsavedChanges);
 
     if (unsavedFiles.length === 0) {
@@ -279,19 +279,43 @@ const MainPlaygroundPage = () => {
     } catch (error) {
       toast.error("Failed to save some files");
     }
-  };
+  }, [handleSave, openFiles]);
 
 
-  useEffect(()=>{
-    const handleKeyDown = (e:KeyboardEvent)=>{
-      if(e.ctrlKey && e.key === "s"){
-        e.preventDefault()
-        handleSave()
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+
+      if (e.ctrlKey && e.shiftKey && key === "s") {
+        e.preventDefault();
+        handleSaveAll();
+        return;
       }
-    }
-     window.addEventListener("keydown", handleKeyDown);
-     return () => window.removeEventListener("keydown", handleKeyDown);
-  },[handleSave]);
+
+      if (e.ctrlKey && key === "s") {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleSave, handleSaveAll]);
+
+  useEffect(() => {
+    if (!activeFileId) return;
+
+    const activeFile = openFiles.find((file) => file.id === activeFileId);
+    if (!activeFile || !activeFile.hasUnsavedChanges) return;
+
+    const timeoutId = window.setTimeout(() => {
+      handleSave(activeFileId).catch((err) =>
+        console.error("Auto-save failed", err)
+      );
+    }, 4000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [activeFileId, openFiles, handleSave]);
 
   if (error) {
     return (

@@ -70,6 +70,9 @@ AUTH_GITHUB_ID=your_github_client_id
 AUTH_GITHUB_SECRET=your_github_secret
 DATABASE_URL=your_mongodb_connection_string
 NEXTAUTH_URL=http://localhost:3000
+OLLAMA_API_URL=http://localhost:11434
+OLLAMA_MODEL=codellama:latest
+OLLAMA_TIMEOUT_MS=30000
 ```
 
 ### 4. Start Local Ollama Model
@@ -93,17 +96,47 @@ Visit `http://localhost:3000` in your browser.
 
 ---
 
-## 🎯 Keyboard Shortcuts
+## 🎯 Keyboard Shortcuts & Autosave
 
 * `Ctrl + Space` or `Double Enter`: Trigger AI suggestions
 * `Tab`: Accept AI suggestion
+* `Ctrl + S`: Save the active file
+* `Ctrl + Shift + S`: Save all open files
+* Active file auto-saves after ~4s of inactivity when changes are present
 * `/`: Open Command Palette (if implemented)
 
 ---
 
 
 
+## 🏗️ Architecture at a Glance
+
+```
+Next.js App Router (UI)
+├─ app/(root) landing + auth
+├─ app/dashboard (project list)
+└─ app/playground/[id] (IDE workspace)
+    ├─ Monaco editor + AI inline completions
+    ├─ File explorer (Zustand)
+    ├─ WebContainers (terminal + preview)
+    └─ AI chat + code-completion APIs
+
+Server
+├─ NextAuth (Google/GitHub)
+├─ Prisma → MongoDB
+└─ AI services → Ollama (configurable URL)
+```
+
+## 🛡️ Production Hardening Highlights
+
+* AI endpoints now require authenticated users, validate payloads with Zod, and enforce request timeouts.
+* Ollama connection is configurable via `OLLAMA_API_URL`, `OLLAMA_MODEL`, and `OLLAMA_TIMEOUT_MS` with central env parsing.
+* Auto-save ensures active files persist after brief inactivity; global shortcuts cover save and save-all.
+* `.env.example` documents required secrets for auth, database, and AI services.
+
 ---
+
+
 
 ## 📄 License
 

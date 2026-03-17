@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
+import { env } from "@/lib/env";
 import { type NextRequest, NextResponse } from "next/server";
-
+import { z } from "zod";
 
 interface CodeSuggestionRequest {
   fileContent: string;
@@ -22,20 +24,45 @@ interface CodeContext {
   incompletePatterns: string[];
 }
 
+const suggestionSchema = z.object({
+  fileContent: z.string().min(1).max(20000),
+  cursorLine: z.number().int().nonnegative(),
+  cursorColumn: z.number().int().nonnegative(),
+  suggestionType: z.string().min(1).max(50),
+  fileName: z.string().max(260).optional(),
+});
+
+const buildOllamaUrl = () => new URL("/api/generate", env.OLLAMA_API_URL).toString();
+
+const createTimeoutSignal = (timeoutMs: number) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  return { signal: controller.signal, timeoutId } as const;
+};
+
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body: CodeSuggestionRequest = await request.json();
+    const parsed = suggestionSchema.safeParse(body);
 
-    const { fileContent, cursorLine, cursorColumn, suggestionType, fileName } =
-      body;
-
-    // Validate input
-    if (!fileContent || cursorLine < 0 || cursorColumn < 0 || !suggestionType) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid input parameters" },
+        {
+          error: "Invalid input parameters",
+          details: parsed.error.flatten().fieldErrors,
+        },
         { status: 400 }
       );
     }
+
+    const { fileContent, cursorLine, cursorColumn, suggestionType, fileName } =
+      parsed.data;
 
     const context = analyzeCodeContext(
       fileContent,
@@ -58,11 +85,18 @@ export async function POST(request: NextRequest) {
         generatedAt: new Date().toISOString(),
       },
     });
-  } catch (error: any) { 
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const status = message.includes("Unauthorized")
+      ? 401
+      : message.includes("timed out")
+        ? 504
+        : 500;
+
     console.error("Context analysis error:", error);
     return NextResponse.json(
-      { error: "Internal server error", message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message },
+      { status }
     );
   }
 }
@@ -76,7 +110,6 @@ function analyzeCodeContext(
   const lines = content.split("\n");
   const currentLine = lines[line] || "";
 
-  // Get surrounding context (10 lines before and after)
   const contextRadius = 10;
   const startLine = Math.max(0, line - contextRadius);
   const endLine = Math.min(lines.length, line + contextRadius);
@@ -84,11 +117,9 @@ function analyzeCodeContext(
   const beforeContext = lines.slice(startLine, line).join("\n");
   const afterContext = lines.slice(line + 1, endLine).join("\n");
 
-  // Detect language and framework
   const language = detectLanguage(content, fileName);
   const framework = detectFramework(content);
 
-  // Analyze code patterns
   const isInFunction = detectInFunction(lines, line);
   const isInClass = detectInClass(lines, line);
   const isAfterComment = detectAfterComment(currentLine, column);
@@ -117,9 +148,9 @@ Framework: ${context.framework}
 Context:
 ${context.beforeContext}
 ${context.currentLine.substring(
-  0,
-  context.cursorPosition.column
-)}|CURSOR|${context.currentLine.substring(context.cursorPosition.column)}
+    0,
+    context.cursorPosition.column
+  )}|CURSOR|${context.currentLine.substring(context.cursorPosition.column)}
 ${context.afterContext}
 
 Analysis:
@@ -138,38 +169,50 @@ Generate suggestion:`;
 }
 
 async function generateSuggestion(prompt: string): Promise<string> {
+  const { signal, timeoutId } = createTimeoutSignal(env.OLLAMA_TIMEOUT_MS);
+
   try {
-    const response = await fetch("http://localhost:11434/api/generate", {
+    const response = await fetch(buildOllamaUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "codellama:latest",
+        model: env.OLLAMA_MODEL,
         prompt,
         stream: false,
-        option: {
+        options: {
           temperature: 0.7,
           max_tokens: 300,
         },
       }),
+      signal,
+      cache: "no-store",
     });
 
-       if (!response.ok) {
-      throw new Error(`AI service error: ${response.statusText}`)
+    if (!response.ok) {
+      throw new Error(`AI service error: ${response.statusText}`);
     }
 
-      const data = await response.json()
-    let suggestion = data.response
+    const data = await response.json();
+    let suggestion = String(data.response ?? "");
 
-     // Clean up the suggestion
+    if (!suggestion) {
+      throw new Error("Empty suggestion from AI service");
+    }
+
     if (suggestion.includes("```")) {
-      const codeMatch = suggestion.match(/```[\w]*\n?([\s\S]*?)```/)
-      suggestion = codeMatch ? codeMatch[1].trim() : suggestion
+      const codeMatch = suggestion.match(/```[\w]*\n?([\s\S]*?)```/);
+      suggestion = codeMatch ? codeMatch[1].trim() : suggestion.trim();
     }
 
-    return suggestion
+    return suggestion.trim();
   } catch (error) {
-      console.error("AI generation error:", error)
-    return "// AI suggestion unavailable"
+    if ((error as Error).name === "AbortError") {
+      throw new Error("AI request timed out");
+    }
+    console.error("AI generation error:", error);
+    return "// AI suggestion unavailable";
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -191,7 +234,6 @@ function detectLanguage(content: string, fileName?: string): string {
     if (ext && extMap[ext]) return extMap[ext];
   }
 
-  // Content-based detection
   if (content.includes("interface ") || content.includes(": string"))
     return "TypeScript";
   if (content.includes("def ") || content.includes("import ")) return "Python";
