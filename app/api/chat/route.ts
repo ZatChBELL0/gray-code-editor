@@ -1,6 +1,7 @@
-import { db } from "@/lib/db";
-import { error } from "console";
+import { auth } from "@/auth";
+import { env } from "@/lib/env";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -11,6 +12,27 @@ interface ChatRequest {
   message: string;
   history: ChatMessage[];
 }
+
+const chatRequestSchema = z.object({
+  message: z.string().min(1).max(4000),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().min(1).max(4000),
+      })
+    )
+    .max(20)
+    .optional(),
+});
+
+const buildOllamaUrl = () => new URL("/api/generate", env.OLLAMA_API_URL).toString();
+
+const createTimeoutSignal = (timeoutMs: number) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  return { signal: controller.signal, timeoutId } as const;
+};
 
 async function generateAIResponse(messages: ChatMessage[]): Promise<string> {
   const systemPrompt = `You are a helpful AI coding assistant. You help developers with:
@@ -25,26 +47,34 @@ Always provide clear, practical answers. Use proper code formatting when showing
   const fullMessages = [{ role: "system", content: systemPrompt }, ...messages];
 
   const prompt = fullMessages
-    .map((msg) => `${msg.role}: ${msg.content}`)
+    .map((msg) => `${msg.role}: ${msg.content.trim()}`)
     .join("\n\n");
 
+  const { signal, timeoutId } = createTimeoutSignal(env.OLLAMA_TIMEOUT_MS);
+
   try {
-    const response = await fetch("http://localhost:11434/api/generate", {
+    const response = await fetch(buildOllamaUrl(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "codellama:latest",
-        prompt: prompt,
+        model: env.OLLAMA_MODEL,
+        prompt,
         stream: false,
         options: {
-          temperature: 0.7, // Controls randomness (0-1)
-          max_tokens: 1000, // Maximum response length
-          top_p: 0.9, // controls diversity
+          temperature: 0.7,
+          max_tokens: 1000,
+          top_p: 0.9,
         },
       }),
+      signal,
+      cache: "no-store",
     });
+
+    if (!response.ok) {
+      throw new Error(`AI service error: ${response.statusText}`);
+    }
 
     const data = await response.json();
 
@@ -52,50 +82,46 @@ Always provide clear, practical answers. Use proper code formatting when showing
       throw new Error("No response from AI model");
     }
 
-    return data.response.trim();
+    return String(data.response).trim();
   } catch (error) {
-    console.error("AI generation error:", error);
-    throw new Error("Failed to generate AI response");
+    if ((error as Error).name === "AbortError") {
+      throw new Error("AI request timed out");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body: ChatRequest = await req.json();
-    const { message, history = [] } = body;
+    const session = await auth();
 
-    // Validate input
-    if (!message || typeof message !== "string") {
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body: ChatRequest = await req.json();
+    const parsed = chatRequestSchema.safeParse(body);
+
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Message is required and must be a string" },
+        {
+          error: "Invalid request payload",
+          details: parsed.error.flatten().fieldErrors,
+        },
         { status: 400 }
       );
     }
 
-    // Validate history format
-    const validHistory = Array.isArray(history)
-      ? history.filter(
-          (msg) =>
-            msg &&
-            typeof msg === "object" &&
-            typeof msg.role === "string" &&
-            typeof msg.content === "string" &&
-            ["user", "assistant"].includes(msg.role)
-        )
-      : [];
-
-    const recentHistory = validHistory.slice(-10);
+    const { message, history = [] } = parsed.data;
 
     const messages: ChatMessage[] = [
-      ...recentHistory,
-      { role: "user", content: message },
+      ...history,
+      { role: "user", content: message.trim() },
     ];
 
-    //   Generate ai response
-
     const aiResponse = await generateAIResponse(messages);
-
-
 
     return NextResponse.json({
       response: aiResponse,
@@ -107,13 +133,19 @@ export async function POST(req: NextRequest) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
 
+    const status = errorMessage.includes("Unauthorized")
+      ? 401
+      : errorMessage.includes("timed out")
+        ? 504
+        : 500;
+
     return NextResponse.json(
       {
         error: "Failed to generate AI response",
         details: errorMessage,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status }
     );
   }
 }
