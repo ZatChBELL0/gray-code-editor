@@ -25,7 +25,4 @@ if (!parsedEnv.success) {
   throw new Error("Invalid environment variables");
 }
 
-export const env = {
-  ...parsedEnv.data,
-  OLLAMA_TIMEOUT_MS: parsedEnv.data.OLLAMA_TIMEOUT_MS ?? 30000,
-};
+export const env = parsedEnv.data;
