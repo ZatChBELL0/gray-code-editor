@@ -1,8 +1,8 @@
-# 🧠 Gray Code Editor – AI-Powered Web IDE
+# 🧠 GrayCode Editor – AI-Powered Web IDE
 
-![Gray Code Editor Thumbnail](public/vibe-code-editor-thumbnail.svg)
+<img src="assets/graycode-banner.png" alt="GrayCode Editor banner" width="100%" />
 
-Gray Code Editor is an AI-assisted, browser-based IDE built with **Next.js App Router**, **WebContainers**, **Monaco Editor**, and **local LLMs via Ollama**. It ships with OAuth login, rich file management, inline AI completions, and an integrated terminal so you can prototype full-stack apps without leaving the browser.
+GrayCode Editor is an AI-assisted, browser-based IDE built with **Next.js App Router**, **WebContainers**, **Monaco Editor**, and **local LLMs via Ollama**. It ships with OAuth login, rich file management, inline AI completions, and an integrated terminal so you can prototype full-stack apps without leaving the browser.
 
 ---
 
