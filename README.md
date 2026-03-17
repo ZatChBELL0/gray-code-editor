@@ -97,6 +97,7 @@ Visit `http://localhost:3000` to start building.
 
 ## 📚 Useful Scripts
 
+- Prisma is used for database access; the client is generated on install. Re-run generation after schema changes.
 - `npm run dev` – Start the Next.js dev server.
 - `npm run lint` – Run ESLint against the project.
 - `npm run build` – Create a production build.
